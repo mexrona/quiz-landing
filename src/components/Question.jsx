@@ -4,12 +4,16 @@
 //   - currentNumber: текущий номер вопроса (1, 2, 3...)
 //   - totalQuestions: общее количество вопросов
 //   - onAnswerSelect: функция для обработки выбора ответа
+//   - onPreviousQuestion: функция для возврата к предыдущему вопросу
+//   - canGoBack: логический флаг, может ли пользователь вернуться (true если не на первом вопросе)
 
 export default function Question({
   question,
   currentNumber,
   totalQuestions,
-  onAnswerSelect
+  onAnswerSelect,
+  onPreviousQuestion,
+  canGoBack
 }) {
   return (
     <div className="question-container">
@@ -43,6 +47,17 @@ export default function Question({
           </button>
         ))}
       </div>
+
+      {/* Кнопка "Назад" для возврата к предыдущему вопросу */}
+      {/* Показывается только если не на первом вопросе */}
+      {canGoBack && (
+        <button
+          className="back-button"
+          onClick={onPreviousQuestion}
+        >
+          ← Назад
+        </button>
+      )}
     </div>
   );
 }

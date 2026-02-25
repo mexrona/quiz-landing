@@ -45,6 +45,14 @@ export default function App() {
     }
   };
 
+  // Обработчик возврата к предыдущему вопросу
+  // Позволяет пользователю вернуться и изменить ответ на предыдущих вопросах
+  const handlePreviousQuestion = () => {
+    if (currentQuestionIndex > 0) {
+      setCurrentQuestionIndex(currentQuestionIndex - 1);
+    }
+  };
+
   // Обработчик перезапуска квиза
   // Создает НОВЫЙ перемешанный набор вопросов и вариантов ответов
   const handleRestart = () => {
@@ -101,6 +109,8 @@ export default function App() {
           currentNumber={currentQuestionIndex + 1}
           totalQuestions={currentQuiz.length}
           onAnswerSelect={handleAnswerSelect}
+          onPreviousQuestion={handlePreviousQuestion}
+          canGoBack={currentQuestionIndex > 0}
         />
       </div>
     </div>
