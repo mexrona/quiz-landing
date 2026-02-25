@@ -1,0 +1,293 @@
+/* ===== Основные стили ===== */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  min-height: 100vh;
+  padding: 20px;
+}
+
+.app {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+}
+
+.container {
+  width: 100%;
+  max-width: 600px;
+}
+
+/* ===== Стили вопроса ===== */
+.question-container {
+  background: white;
+  border-radius: 15px;
+  padding: 40px 30px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+  animation: slideIn 0.4s ease-out;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Индикатор прогресса */
+.progress-bar {
+  width: 100%;
+  height: 8px;
+  background: #e0e0e0;
+  border-radius: 10px;
+  overflow: hidden;
+  margin-bottom: 15px;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+  transition: width 0.3s ease;
+  border-radius: 10px;
+}
+
+.progress-text {
+  color: #999;
+  font-size: 14px;
+  margin-bottom: 25px;
+  text-align: right;
+}
+
+/* Текст вопроса */
+.question-title {
+  font-size: 24px;
+  color: #333;
+  margin-bottom: 30px;
+  line-height: 1.4;
+}
+
+/* Варианты ответов - кнопки */
+.options-container {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.option-button {
+  padding: 15px 20px;
+  font-size: 16px;
+  border: 2px solid #e0e0e0;
+  border-radius: 10px;
+  background: white;
+  color: #333;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-align: left;
+  font-weight: 500;
+}
+
+.option-button:hover {
+  border-color: #667eea;
+  background: #f5f5ff;
+  transform: translateX(5px);
+}
+
+.option-button:active {
+  transform: scale(0.98);
+  border-color: #764ba2;
+  background: #667eea;
+  color: white;
+}
+
+/* ===== Стили результатов ===== */
+.results-container {
+  background: white;
+  border-radius: 15px;
+  padding: 40px 30px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+  text-align: center;
+  animation: slideIn 0.4s ease-out;
+}
+
+.results-title {
+  font-size: 32px;
+  margin-bottom: 20px;
+  font-weight: bold;
+}
+
+.results-title.success {
+  color: #4caf50;
+}
+
+.results-title.good {
+  color: #2196f3;
+}
+
+.results-title.medium {
+  color: #ff9800;
+}
+
+.results-title.low {
+  color: #f44336;
+}
+
+/* Результат счета */
+.results-score {
+  display: flex;
+  justify-content: center;
+  align-items: baseline;
+  gap: 10px;
+  margin: 30px 0;
+}
+
+.score-number {
+  font-size: 48px;
+  font-weight: bold;
+  color: #667eea;
+}
+
+.score-text {
+  font-size: 18px;
+  color: #999;
+}
+
+/* Круг с процентом */
+.results-percentage {
+  display: flex;
+  justify-content: center;
+  margin: 30px 0;
+}
+
+.percentage-circle {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+/* Сообщение */
+.results-message {
+  font-size: 16px;
+  color: #666;
+  line-height: 1.6;
+  margin: 25px 0;
+}
+
+/* Кнопка перезапуска */
+.restart-button {
+  padding: 15px 40px;
+  font-size: 16px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: all 0.3s ease;
+  margin-top: 20px;
+}
+
+.restart-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+}
+
+.restart-button:active {
+  transform: translateY(0);
+}
+
+/* ===== Мобильная адаптация ===== */
+@media (max-width: 768px) {
+  body {
+    padding: 10px;
+  }
+
+  .question-container {
+    padding: 30px 20px;
+  }
+
+  .question-title {
+    font-size: 20px;
+    margin-bottom: 20px;
+  }
+
+  .results-container {
+    padding: 30px 20px;
+  }
+
+  .results-title {
+    font-size: 26px;
+  }
+
+  .score-number {
+    font-size: 40px;
+  }
+
+  .option-button {
+    padding: 12px 16px;
+    font-size: 15px;
+  }
+}
+
+@media (max-width: 480px) {
+  .question-container {
+    padding: 25px 15px;
+  }
+
+  .question-title {
+    font-size: 18px;
+    margin-bottom: 15px;
+  }
+
+  .progress-text {
+    font-size: 12px;
+  }
+
+  .results-container {
+    padding: 25px 15px;
+  }
+
+  .results-title {
+    font-size: 22px;
+  }
+
+  .score-number {
+    font-size: 32px;
+  }
+
+  .percentage-circle {
+    width: 100px;
+    height: 100px;
+    font-size: 24px;
+  }
+
+  .results-message {
+    font-size: 14px;
+  }
+
+  .option-button {
+    padding: 12px 12px;
+    font-size: 14px;
+  }
+
+  .restart-button {
+    padding: 12px 30px;
+    font-size: 15px;
+  }
+}
