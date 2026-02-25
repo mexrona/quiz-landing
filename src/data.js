@@ -71,3 +71,68 @@ export const getRecommendation = (score, totalQuestions) => {
     };
   }
 };
+
+// ===== ФУНКЦИИ ДЛЯ ПЕРЕМЕШИВАНИЯ =====
+
+// Базовая функция для перемешивания массива (алгоритм Fisher-Yates)
+// Берет копию массива и возвращает её в случайном порядке
+const shuffleArray = (array) => {
+  // Создаем копию массива, чтобы не изменять оригинал
+  const shuffled = [...array];
+
+  // Алгоритм Fisher-Yates: идем с конца массива и меняем каждый элемент
+  // на случайный элемент из оставшихся
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    // Генерируем случайный индекс от 0 до i
+    const randomIndex = Math.floor(Math.random() * (i + 1));
+
+    // Меняем элементы местами
+    [shuffled[i], shuffled[randomIndex]] = [shuffled[randomIndex], shuffled[i]];
+  }
+
+  return shuffled;
+};
+
+// Перемешивает варианты ответов в одном вопросе
+// Очень важно: обновляет индекс correctAnswer после перемешивания!
+const shuffleQuestionOptions = (question) => {
+  // Создаем новый объект вопроса (не изменяем оригинал)
+  const newQuestion = { ...question };
+
+  // Создаем массив пар [вариант, оригинальный индекс]
+  // Это нужно, чтобы отследить, какой был правильный ответ
+  const optionsWithIndices = question.options.map((option, index) => ({
+    option,
+    originalIndex: index
+  }));
+
+  // Перемешиваем этот array
+  const shuffledWithIndices = shuffleArray(optionsWithIndices);
+
+  // Вытаскиваем только варианты в новом порядке
+  newQuestion.options = shuffledWithIndices.map(item => item.option);
+
+  // ГЛАВНОЕ: находим новый индекс того варианта, который был правильным
+  // Нужно найти элемент с originalIndex === question.correctAnswer
+  newQuestion.correctAnswer = shuffledWithIndices.findIndex(
+    item => item.originalIndex === question.correctAnswer
+  );
+
+  return newQuestion;
+};
+
+// Подготавливает перемешанный набор вопросов для нового квиза
+// Перемешивает:
+// 1. Порядок вопросов
+// 2. Порядок вариантов ответов в каждом вопросе
+export const getShuffledQuizData = () => {
+  // Шаг 1: Перемешиваем сами вопросы
+  const shuffledQuestions = shuffleArray(quizData);
+
+  // Шаг 2: Для каждого вопроса перемешиваем его варианты ответов
+  const fullyShuffledQuestions = shuffledQuestions.map(question =>
+    shuffleQuestionOptions(question)
+  );
+
+  return fullyShuffledQuestions;
+};

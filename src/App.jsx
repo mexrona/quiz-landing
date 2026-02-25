@@ -1,25 +1,36 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Question from "./components/Question";
 import Results from "./components/Results";
-import { quizData, getRecommendation } from "./data";
+import { quizData, getRecommendation, getShuffledQuizData } from "./data";
 import "./App.css";
 
 // Главный компонент приложения
 // Управляет состоянием квиза: текущий вопрос, ответы пользователя, результаты
 export default function App() {
   // Состояния:
-  // currentQuestionIndex - индекс текущего вопроса (0, 1, 2...)
-  // answers - массив ответов пользователя {questionId: index_ответа}
+  // currentQuiz - перемешанный набор вопросов для текущей попытки
+  // currentQuestionIndex - индекс текущего вопроса (0, 1, 2...) в currentQuiz
+  // answers - объект с ответами пользователя {questionId: index_ответа}
   // isFinished - завершен ли квиз
+  const [currentQuiz, setCurrentQuiz] = useState([]);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [answers, setAnswers] = useState({});
   const [isFinished, setIsFinished] = useState(false);
 
+  // useEffect: инициализируем новый перемешанный квиз при первой загрузке компонента
+  useEffect(() => {
+    const shuffledQuiz = getShuffledQuizData();
+    setCurrentQuiz(shuffledQuiz);
+  }, []);
+
   // Обработчик выбора ответа
   const handleAnswerSelect = (answerIndex) => {
-    const currentQuestion = quizData[currentQuestionIndex];
+    // Если по какой-то причине currentQuiz еще не загрузился - ничего не делаем
+    if (currentQuiz.length === 0) return;
 
-    // Сохраняем ответ пользователя
+    const currentQuestion = currentQuiz[currentQuestionIndex];
+
+    // Сохраняем ответ пользователя, используя id вопроса как ключ
     const newAnswers = {
       ...answers,
       [currentQuestion.id]: answerIndex
@@ -27,7 +38,7 @@ export default function App() {
     setAnswers(newAnswers);
 
     // Переходим на следующий вопрос или завершаем квиз
-    if (currentQuestionIndex < quizData.length - 1) {
+    if (currentQuestionIndex < currentQuiz.length - 1) {
       setCurrentQuestionIndex(currentQuestionIndex + 1);
     } else {
       setIsFinished(true);
@@ -35,16 +46,21 @@ export default function App() {
   };
 
   // Обработчик перезапуска квиза
+  // Создает НОВЫЙ перемешанный набор вопросов и вариантов ответов
   const handleRestart = () => {
+    const shuffledQuiz = getShuffledQuizData();
+    setCurrentQuiz(shuffledQuiz);
     setCurrentQuestionIndex(0);
     setAnswers({});
     setIsFinished(false);
   };
 
-  // Подсчет правильных ответов
+  // Подсчет правильных ответов на основе текущего набора вопросов
   const calculateScore = () => {
     let score = 0;
-    quizData.forEach((question) => {
+    currentQuiz.forEach((question) => {
+      // Проверяем: если пользователь выбрал индекс, совпадающий с correctAnswer,
+      // то это правильный ответ
       if (answers[question.id] === question.correctAnswer) {
         score++;
       }
@@ -52,16 +68,21 @@ export default function App() {
     return score;
   };
 
+  // Если quizData еще загружается - показываем пустой экран
+  if (currentQuiz.length === 0) {
+    return <div className="app"></div>;
+  }
+
   // Если квиз завершен - показываем результаты
   if (isFinished) {
     const score = calculateScore();
-    const recommendation = getRecommendation(score, quizData.length);
+    const recommendation = getRecommendation(score, currentQuiz.length);
 
     return (
       <div className="app">
         <Results
           score={score}
-          totalQuestions={quizData.length}
+          totalQuestions={currentQuiz.length}
           recommendation={recommendation}
           onRestart={handleRestart}
         />
@@ -69,8 +90,8 @@ export default function App() {
     );
   }
 
-  // Во время прохождения - показываем текущий вопрос
-  const currentQuestion = quizData[currentQuestionIndex];
+  // Во время прохождения - показываем текущий вопрос из перемешанного набора
+  const currentQuestion = currentQuiz[currentQuestionIndex];
 
   return (
     <div className="app">
@@ -78,7 +99,7 @@ export default function App() {
         <Question
           question={currentQuestion}
           currentNumber={currentQuestionIndex + 1}
-          totalQuestions={quizData.length}
+          totalQuestions={currentQuiz.length}
           onAnswerSelect={handleAnswerSelect}
         />
       </div>
