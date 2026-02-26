@@ -12,16 +12,47 @@ export default function App() {
     // currentQuestionIndex - индекс текущего вопроса (0, 1, 2...) в currentQuiz
     // answers - объект с ответами пользователя {questionId: index_ответа}
     // isFinished - завершен ли квиз
+    // timeLeft - оставшееся время в секундах на текущий вопрос
     const [currentQuiz, setCurrentQuiz] = useState([]);
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
     const [answers, setAnswers] = useState({});
     const [isFinished, setIsFinished] = useState(false);
+    const [timeLeft, setTimeLeft] = useState(10);
 
     // useEffect: инициализируем новый перемешанный квиз при первой загрузке компонента
     useEffect(() => {
         const shuffledQuiz = getShuffledQuizData();
         setCurrentQuiz(shuffledQuiz);
     }, []);
+
+    // useEffect: управляем таймером для текущего вопроса
+    useEffect(() => {
+        // Сбрасываем таймер при смене вопроса
+        setTimeLeft(10);
+
+        // Если квиз уже завершен - таймер не нужен
+        if (isFinished || currentQuiz.length === 0) return;
+
+        // Таймер: отсчитываем каждую секунду
+        const timer = setInterval(() => {
+            setTimeLeft((prev) => {
+                // Если время закончилось - переходим на следующий вопрос (пропускаем)
+                if (prev <= 1) {
+                    // Логика автоматического перехода (вопрос пропускается)
+                    const isLastQuestion = currentQuestionIndex >= currentQuiz.length - 1;
+                    if (isLastQuestion) {
+                        setIsFinished(true);
+                    } else {
+                        setCurrentQuestionIndex(currentQuestionIndex + 1);
+                    }
+                    return 0;
+                }
+                return prev - 1;
+            });
+        }, 1000);
+
+        return () => clearInterval(timer);
+    }, [currentQuestionIndex, isFinished, currentQuiz.length]);
 
     // Обработчик выбора ответа
     const handleAnswerSelect = (answerIndex) => {
@@ -59,6 +90,7 @@ export default function App() {
         setCurrentQuestionIndex(0);
         setAnswers({});
         setIsFinished(false);
+        setTimeLeft(10);
     };
 
     // Подсчет правильных ответов на основе текущего набора вопросов
@@ -107,6 +139,7 @@ export default function App() {
                     currentNumber={currentQuestionIndex + 1}
                     totalQuestions={currentQuiz.length}
                     onAnswerSelect={handleAnswerSelect}
+                    timeLeft={timeLeft}
                 />
             </div>
         </div>
