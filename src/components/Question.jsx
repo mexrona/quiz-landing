@@ -4,12 +4,14 @@
 //   - currentNumber: текущий номер вопроса (1, 2, 3...)
 //   - totalQuestions: общее количество вопросов
 //   - onAnswerSelect: функция для обработки выбора ответа
+//   - timeLeft: оставшееся время в секундах
 
 export default function Question({
   question,
   currentNumber,
   totalQuestions,
-  onAnswerSelect
+  onAnswerSelect,
+  timeLeft
 }) {
   return (
     <div className="question-container">
@@ -23,9 +25,9 @@ export default function Question({
         ></div>
       </div>
 
-      {/* Текст прогресса */}
+      {/* Текст прогресса и таймер */}
       <div className="progress-text">
-        Шаг {currentNumber} из {totalQuestions}
+        Шаг {currentNumber} из {totalQuestions} · Время: <span style={{ fontWeight: 'bold', color: timeLeft <= 3 ? '#e74c3c' : '#27ae60' }}>{timeLeft}с</span>
       </div>
 
       {/* Сам вопрос */}
