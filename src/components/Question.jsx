@@ -45,6 +45,17 @@ export default function Question({
           </button>
         ))}
       </div>
+
+      {/* Кнопка "Назад" для возврата к предыдущему вопросу */}
+      {/* Показывается только если не на первом вопросе */}
+      {canGoBack && (
+        <button
+          className="back-button"
+          onClick={onPreviousQuestion}
+        >
+          ← Назад
+        </button>
+      )}
     </div>
   );
 }
