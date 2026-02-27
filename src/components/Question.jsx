@@ -4,16 +4,14 @@
 //   - currentNumber: текущий номер вопроса (1, 2, 3...)
 //   - totalQuestions: общее количество вопросов
 //   - onAnswerSelect: функция для обработки выбора ответа
-//   - onPreviousQuestion: функция для возврата к предыдущему вопросу
-//   - canGoBack: логический флаг, может ли пользователь вернуться (true если не на первом вопросе)
+//   - timeLeft: оставшееся время в секундах
 
 export default function Question({
   question,
   currentNumber,
   totalQuestions,
   onAnswerSelect,
-  onPreviousQuestion,
-  canGoBack
+  timeLeft
 }) {
   return (
     <div className="question-container">
@@ -27,9 +25,9 @@ export default function Question({
         ></div>
       </div>
 
-      {/* Текст прогресса */}
+      {/* Текст прогресса и таймер */}
       <div className="progress-text">
-        Шаг {currentNumber} из {totalQuestions}
+        Шаг {currentNumber} из {totalQuestions} · Время: <span style={{ fontWeight: 'bold', color: timeLeft <= 3 ? '#e74c3c' : '#27ae60' }}>{timeLeft}с</span>
       </div>
 
       {/* Сам вопрос */}
